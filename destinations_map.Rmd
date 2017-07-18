@@ -1,0 +1,43 @@
+---
+title: "Main tourist destinations in Brazil, by reason of the trip"
+author: "Ewerton Monti"
+date: "18/07/2017"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This map shows the main tourist destinations in Brazil in 2016. It shows the 10 most important destinations by reason of the trip (leisure, business or other).
+
+The size of the circles reflects the amount of visits to each destination.  
+
+Users can choose the reasons of the trip they want to see in the map.  
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+library(leaflet)
+destinations <- data.frame(
+    name = c('Rio de Janeiro - RJ', 'Florianópolis - SC', 'Foz do Iguaçu - PR', 'São Paulo - SP', 'Armação dos Búzios - RJ', 'Bombinhas - SC', 'Salvador - BA', 'Balneário Camboriú - SC', 'Angra dos Reis - RJ', 'Parati - RJ', 'São Paulo - SP', 'Rio de Janeiro - RJ', 'Curitiba - PR', 'Porto Alegre - RS', 'Belo Horizonte - MG', 'Campinas - SP', 'Foz do Iguaçu - PR', 'Salvador - BA', 'Brasília - DF', 'Florianópolis - SC', 'São Paulo - SP', 'Rio de Janeiro - RJ', 'Foz do Iguaçu - PR', 'Belo Horizonte - MG', 'Curitiba - PR', 'Salvador - BA', 'Florianópolis - SC', 'Brasília - DF', 'Porto Alegre - RS', 'Fortaleza - CE'),
+    lng = c(-43.2278751249952, -48.5476373781933, -54.5871024886046, -46.5703831821127, -41.8877494680881, -48.5213451348448, -38.4880614840079, -48.6346174770265, -44.3196272622666, -44.7108585020174, -46.5703831821127, -43.2278751249952, -49.2718478850774, -51.2286604637023, -43.9264531735305, -47.0601562729732, -54.5871024886046, -38.4880614840079, -47.8879054780313, -48.5476373781933, -46.5703831821127, -43.2278751249952, -54.5871024886046, -43.9264531735305, -49.2718478850774, -38.4880614840079, -48.5476373781933, -47.8879054780313, -51.2286604637023, -38.5899275550432),
+    lat= c(-22.8766521181865, -27.58779554855, -25.5424932795293, -23.5673865, -22.7577637929238, -27.1442546993321, -13.0147719115328, -26.9918186052546, -23.0091159352755, -23.2194136073409, -23.5673865, -22.8766521181865, -25.432956, -30.0300367747664, -19.9375242937751, -22.9073425, -25.5424932795293, -13.0147719115328, -15.794087361891, -27.58779554855, -23.5673865, -22.8766521181865, -25.5424932795293, -19.9375242937751, -25.432956, -13.0147719115328, -27.58779554855, -15.794087361891, -30.0300367747664, -3.723805035),
+    tur = c(32.2, 17.9, 13.2, 9.1, 8.1, 5.5, 4.9, 4.1, 4, 3.4, 41.2, 30.1, 4, 3.5, 3.3, 2.8, 2.7, 2.7, 2.5, 2.3, 28.9, 23.4, 5.2, 4.9, 4.9, 4.3, 4.1, 3.4, 3.3, 2.8),
+    reason = c(replicate(10, 'Leisure'), replicate(10, 'Business'), replicate(10, 'Other'))
+)
+
+factpal <- colorFactor(topo.colors(3), destinations$reason)
+
+my_map <- destinations %>% leaflet() %>% addTiles() %>% 
+    addCircles(weight = 1, radius = destinations$tur * 10000, group = destinations$reason, color = ~factpal(reason), label = destinations$name) %>% 
+    #addMarkers(label = destinations$name) %>% 
+    addLayersControl(
+        overlayGroups = c("Leisure", "Business", "Other"),
+        options = layersControlOptions(collapsed = FALSE)
+    )
+my_map
+
+
+```
+
